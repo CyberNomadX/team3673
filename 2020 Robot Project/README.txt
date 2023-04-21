@@ -1,1 +1,0 @@
-Please create the 2020 project in this folder. Do NOT upload single files. This does not work for maintaining a functional copy of the code to load on robots.  

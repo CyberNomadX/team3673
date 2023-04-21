@@ -3,6 +3,7 @@
 /* Open Source Software - may be modified and shared by FRC teams. The code   */
 /* must be accompanied by the FIRST BSD license file in the root directory of */
 /* the project.                                                               */
+
 /*----------------------------------------------------------------------------*/
 
 package frc.robot;
@@ -26,6 +27,11 @@ public class Robot extends TimedRobot {
 	LightDrivePWM ldrive_pwm;
 	Servo servo1;
 	Servo servo2;
+
+	Spark spark0;
+	Spark spark1;
+	Spark spark2;
+	Spark spark3;
 
 	double panPosition;
 	double tiltPosition;
@@ -53,6 +59,8 @@ public class Robot extends TimedRobot {
 		servo2 = new Servo(6);
 		//Initialize a new PWM LightDrive
 		ldrive_pwm = new LightDrivePWM(servo1, servo2);
+
+		// Initilize sparks
 
 		panPosition = 0.5;
 		tiltPosition = 0.5;

@@ -65,6 +65,10 @@ public interface OperatorInterface {
     return new Trigger(() -> false);
   }
 
+  public default Trigger getSpinTurnFLButton() {
+    return new Trigger(() -> false);
+  }
+
   public default Trigger getInterruptAll() {
     return new Trigger(() -> false);
   }

@@ -137,6 +137,8 @@ public class SwerveModule {
    * @return the stator current of the drive motor of this swerve module
    */
   public double getDriveCurrent() {
+//    return inputs.driveCurrentAmps[0];
+//    System.out.println("input.driveCurrentAmps.length = " + inputs.driveCurrentAmps.length);
     return inputs.driveCurrentAmps[0];
   }
 

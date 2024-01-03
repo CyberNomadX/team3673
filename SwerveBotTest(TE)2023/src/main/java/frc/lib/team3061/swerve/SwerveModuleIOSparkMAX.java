@@ -51,6 +51,7 @@ public class SwerveModuleIOSparkMAX implements SwerveModuleIO {
   private CANCoder angleEncoder;
   private SimpleMotorFeedforward feedForward;
   private double angleOffsetDeg;
+  private int skipCounter;
 
   /**
    * Make a new SwerveModuleIOSparkMax object.
@@ -101,10 +102,12 @@ public class SwerveModuleIOSparkMAX implements SwerveModuleIO {
     angleEncoder.configFactoryDefault();
 
     CANCoderConfiguration config = new CANCoderConfiguration();
-    config.absoluteSensorRange = AbsoluteSensorRange.Unsigned_0_to_360;
+//    config.absoluteSensorRange = AbsoluteSensorRange.Unsigned_0_to_360;
+    config.absoluteSensorRange = AbsoluteSensorRange.Signed_PlusMinus180;
     config.sensorDirection = canCoderInverted;
     config.initializationStrategy = SensorInitializationStrategy.BootToAbsolutePosition;
     config.sensorTimeBase = SensorTimeBase.PerSecond;
+    config.magnetOffsetDegrees = angleOffsetDeg; 
     angleEncoder.configAllSettings(config);
   }
 
@@ -129,10 +132,11 @@ public class SwerveModuleIOSparkMAX implements SwerveModuleIO {
 //    angleMotorConfig.BASE_PIDF0_STATUS_FRAME_RATE_MS = 102;
 
     mAngleMotor = SparkMAXFactory.createSparkMax(angleMotorID, angleMotorConfig);
+    mAngleMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
 
-    double absolutePosition =
-        Conversions.degreesToFalcon(getCanCoder().getDegrees() - angleOffsetDeg, angleGearRatio);
-//    mAngleMotor.setSelectedSensorPosition(absolutePosition);
+//    double absolutePosition =
+//       Conversions.degreesToFalcon(getCanCoder().getDegrees() - angleOffsetDeg, angleGearRatio);
+//        mAngleMotor.setSelectedSensorPosition(absolutePosition);        
 //    mAngleMotor.configVoltageCompSaturation(12); // default 12v voltage compensation for motors
 //    mAngleMotor.enableVoltageCompensation(true);
   }
@@ -192,7 +196,7 @@ public class SwerveModuleIOSparkMAX implements SwerveModuleIO {
 //        Conversions.falconToMPS(
 //            mDriveMotor.getSelectedSensorVelocity(), wheelCircumference, driveGearRatio);
 //    inputs.driveAppliedPercentage = mDriveMotor.getMotorOutputPercent();
-//    inputs.driveCurrentAmps = new double[] {mDriveMotor.getStatorCurrent()};
+    inputs.driveCurrentAmps = new double[] {mDriveMotor.getOutputCurrent()};
 //    inputs.driveTempCelsius = new double[] {mDriveMotor.getTemperature()};
 
     inputs.angleAbsolutePositionDeg = angleEncoder.getAbsolutePosition();
@@ -226,6 +230,12 @@ public class SwerveModuleIOSparkMAX implements SwerveModuleIO {
     mDriveMotor.set(percentage);
   }
 
+  /** Run the turn motor at the specified percentage of full power. */
+  @Override
+  public void setTurnMotorPercentage(double percentage) {
+    mAngleMotor.set(percentage);
+  }
+
   /** Run the drive motor at the specified velocity. */
   @Override
   public void setDriveVelocity(double velocity) {
@@ -239,8 +249,27 @@ public class SwerveModuleIOSparkMAX implements SwerveModuleIO {
 
   /** Run the turn motor to the specified angle. */
   @Override
-  public void setAnglePosition(double degrees) {
-//    mAngleMotor.set(ControlMode.Position, Conversions.degreesToFalcon(degrees, angleGearRatio));
+  public void setAnglePosition(double desiredAngle) {
+    //mAngleMotor.set(ControlMode.Position, Conversions.degreesToFalcon(degrees, angleGearRatio));
+    double currentAngle = angleEncoder.getAbsolutePosition();
+    double deadBand = 5.0;
+    skipCounter++;
+    if(currentAngle < desiredAngle - deadBand) {
+      mAngleMotor.set(0.1);
+      if(skipCounter >= 50) {
+        System.out.println("TurnLeft from " + currentAngle + " to " + desiredAngle);
+      }
+    } else if(currentAngle > desiredAngle + deadBand) { 
+      mAngleMotor.set(-0.1);
+      if(skipCounter >= 50) {
+        System.out.println("TurnRight from " + currentAngle + " to " + desiredAngle);
+      }
+    } else {
+      mAngleMotor.set(0.0);
+    }
+    if(skipCounter >= 50) {
+      skipCounter = 0;
+    }
   }
 
   /** Enable or disable brake mode on the drive motor. */

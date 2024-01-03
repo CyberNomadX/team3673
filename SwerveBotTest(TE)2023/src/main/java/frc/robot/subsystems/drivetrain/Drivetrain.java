@@ -119,6 +119,10 @@ public class Drivetrain extends SubsystemBase {
   private Alert noPoseAlert =
       new Alert("Attempted to reset pose from vision, but no pose was found.", AlertType.WARNING);
 
+  double xVelocity;
+  double yVelocity;
+  double rotationalVelocity;
+  
   /**
    * Creates a new Drivetrain subsystem.
    *
@@ -148,7 +152,7 @@ public class Drivetrain extends SubsystemBase {
 
     this.isFieldRelative = true;
 
-    this.gyroOffset = 0;
+    this.gyroOffset = 0.0;
 
     this.chassisSpeeds = new ChassisSpeeds(0.0, 0.0, 0.0);
 
@@ -164,7 +168,10 @@ public class Drivetrain extends SubsystemBase {
         .addNumber("Gyroscope Angle", () -> getRotation().getDegrees())
         .withPosition(9, 0)
         .withSize(1, 1);
-    tabMain.addBoolean("X-Stance On?", this::isXstance).withPosition(7, 0).withSize(1, 1);
+    tabMain
+        .addBoolean("X-Stance On?", this::isXstance)
+        .withPosition(7, 0)
+        .withSize(1, 1);
     tabMain
         .addBoolean("Field-Relative Enabled?", () -> this.isFieldRelative)
         .withPosition(8, 0)
@@ -390,7 +397,21 @@ public class Drivetrain extends SubsystemBase {
       double rotationalVelocity,
       boolean isOpenLoop,
       boolean overrideFieldRelative) {
-
+/*  
+    ShuffleboardTab tabMain = Shuffleboard.getTab("MAIN");
+    tabMain
+        .addNumber("xVelocity", () -> this.xVelocity)
+        .withPosition(4, 0)
+        .withSize(1, 1);
+    tabMain
+        .addNumber("yVelocity", () -> this.yVelocity)
+        .withPosition(5, 0)
+        .withSize(1, 1);
+    tabMain
+        .addNumber("rotationalVelocity", () -> this.rotationalVelocity)
+        .withPosition(6, 0)
+        .withSize(1, 1);
+*/    
     switch (driveMode) {
       case NORMAL:
         // get the slow-mode multiplier from the config
@@ -444,6 +465,7 @@ public class Drivetrain extends SubsystemBase {
         this.setXStance();
         break;
     }
+    Shuffleboard.update();
   }
 
   /**
@@ -560,6 +582,7 @@ public class Drivetrain extends SubsystemBase {
    */
   public void enableFieldRelative() {
     this.isFieldRelative = true;
+    System.out.println("Field relative");
   }
 
   /**
@@ -568,6 +591,7 @@ public class Drivetrain extends SubsystemBase {
    */
   public void disableFieldRelative() {
     this.isFieldRelative = false;
+    System.out.println("Robot relative");
   }
 
   /**
@@ -808,13 +832,27 @@ public class Drivetrain extends SubsystemBase {
 //  return swerveModules;
 //  }
 
-  public void spinDriveFL(){
-    SwerveModuleIO smio = swerveModules[0].getSwerveModuleIO();
-    smio.setDriveMotorPercentage(0.3);
-  }  
+public void spinDriveFL(){
+  SwerveModuleIO smio = swerveModules[0].getSwerveModuleIO();
+  smio.setDriveMotorPercentage(0.3);
+  System.out.println("SpinDriveFL");
+}  
 
-  public void stopDriveFL(){
-    SwerveModuleIO smio = swerveModules[0].getSwerveModuleIO();
-    smio.setDriveMotorPercentage(0.0);
-  }
+public void stopDriveFL(){
+  SwerveModuleIO smio = swerveModules[0].getSwerveModuleIO();
+  smio.setDriveMotorPercentage(0.0);
+  System.out.println("StopDriveFL");
+}
+
+public void spinTurnFL(){
+  SwerveModuleIO smio = swerveModules[0].getSwerveModuleIO();
+  smio.setTurnMotorPercentage(0.3);
+  System.out.println("SpinTurnFL");
+}  
+
+public void stopTurnFL(){
+  SwerveModuleIO smio = swerveModules[0].getSwerveModuleIO();
+  smio.setTurnMotorPercentage(0.0);
+  System.out.println("StopTurnFL");
+}
 }

@@ -75,4 +75,10 @@ public class DualJoysticksOI implements OperatorInterface {
   public Trigger getSpinDriveFLButton() {
     return rotateJoystickButtons[5];
   }
+  
+  //  @Override
+    // rightstick top left button will spin drive positive 
+    public Trigger getSpinTurnFLButton() {
+      return rotateJoystickButtons[10];
+    }
 }

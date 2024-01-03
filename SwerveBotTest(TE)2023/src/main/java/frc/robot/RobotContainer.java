@@ -510,6 +510,10 @@ public class RobotContainer {
     // spin raw motor Drive FL
     oi.getSpinDriveFLButton().onTrue(Commands.runOnce(drivetrain::spinDriveFL, drivetrain));
     oi.getSpinDriveFLButton().onFalse(Commands.runOnce(drivetrain::stopDriveFL, drivetrain));
+   
+    // spin raw motor Turn FL
+    oi.getSpinTurnFLButton().onTrue(Commands.runOnce(drivetrain::spinTurnFL, drivetrain));
+    oi.getSpinTurnFLButton().onFalse(Commands.runOnce(drivetrain::stopTurnFL, drivetrain));
   }
 
   private void configureSubsystemCommands() {

@@ -1,5 +1,9 @@
 # Team3673 Robotics Archive
 
+## Note
+
+This repository has been restructured which, in turn will affect code functionalities and calls.
+
 Welcome to the Team3673 Robotics Archive repository. This repository contains various projects, libraries, and test codes developed by the team over the years.
 
 ## Directory Structure

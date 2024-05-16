@@ -41,7 +41,7 @@ Welcome to the Team3673 Robotics Archive repository. This repository contains va
 
 1. Clone the repository:
    ```sh
-   `git clone https://github.com/team3673/Team3673_Archive.git`
+   git clone https://github.com/team3673/Team3673_Archive.git
 2. Navigate to the desired project or library directory.
 
 ## Contributing
